@@ -39,6 +39,7 @@ impl<T> KangarooTwelve<T> {
     /// Creates  new [`KangarooTwelve`] hasher with a security level of 128 bits.
     ///
     /// [`KangarooTwelve`]: struct.KangarooTwelve.html
+    #[inline(always)]
     pub fn new(custom_string: T) -> Self {
         let rate = bits_to_rate(128);
         KangarooTwelve {

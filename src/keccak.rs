@@ -23,6 +23,7 @@ impl Keccak {
     /// Creates  new [`Keccak`] hasher with a security level of 224 bits.
     ///
     /// [`Keccak`]: struct.Keccak.html
+    #[inline(always)]
     pub fn v224() -> Keccak {
         Keccak::new(224)
     }
@@ -30,6 +31,7 @@ impl Keccak {
     /// Creates  new [`Keccak`] hasher with a security level of 256 bits.
     ///
     /// [`Keccak`]: struct.Keccak.html
+    #[inline(always)]
     pub fn v256() -> Keccak {
         Keccak::new(256)
     }
@@ -37,6 +39,7 @@ impl Keccak {
     /// Creates  new [`Keccak`] hasher with a security level of 384 bits.
     ///
     /// [`Keccak`]: struct.Keccak.html
+    #[inline(always)]
     pub fn v384() -> Keccak {
         Keccak::new(384)
     }
@@ -44,10 +47,12 @@ impl Keccak {
     /// Creates  new [`Keccak`] hasher with a security level of 512 bits.
     ///
     /// [`Keccak`]: struct.Keccak.html
+    #[inline(always)]
     pub fn v512() -> Keccak {
         Keccak::new(512)
     }
 
+    #[inline(always)]
     fn new(bits: usize) -> Keccak {
         Keccak {
             state: KeccakState::new(bits_to_rate(bits), Self::DELIM),
@@ -69,6 +74,7 @@ impl Hasher for Keccak {
     /// keccak.update(b" world");
     /// # }
     /// ```
+    #[inline]
     fn update(&mut self, input: &[u8]) {
         self.state.update(input);
     }
@@ -87,6 +93,7 @@ impl Hasher for Keccak {
     /// # }
     /// #
     /// ```
+    #[inline]
     fn finalize(self, output: &mut [u8]) {
         self.state.finalize(output);
     }

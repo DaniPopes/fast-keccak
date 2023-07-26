@@ -40,6 +40,7 @@ impl Sha3 {
     /// Creates  new [`Sha3`] hasher with a security level of 224 bits.
     ///
     /// [`Sha3`]: struct.Sha3.html
+    #[inline(always)]
     pub fn v224() -> Sha3 {
         Sha3::new(224)
     }
@@ -47,6 +48,7 @@ impl Sha3 {
     /// Creates  new [`Sha3`] hasher with a security level of 256 bits.
     ///
     /// [`Sha3`]: struct.Sha3.html
+    #[inline(always)]
     pub fn v256() -> Sha3 {
         Sha3::new(256)
     }
@@ -54,6 +56,7 @@ impl Sha3 {
     /// Creates  new [`Sha3`] hasher with a security level of 384 bits.
     ///
     /// [`Sha3`]: struct.Sha3.html
+    #[inline(always)]
     pub fn v384() -> Sha3 {
         Sha3::new(384)
     }
@@ -61,10 +64,12 @@ impl Sha3 {
     /// Creates  new [`Sha3`] hasher with a security level of 512 bits.
     ///
     /// [`Sha3`]: struct.Sha3.html
+    #[inline(always)]
     pub fn v512() -> Sha3 {
         Sha3::new(512)
     }
 
+    #[inline(always)]
     fn new(bits: usize) -> Sha3 {
         Sha3 {
             state: KeccakState::new(bits_to_rate(bits), Self::DELIM),
@@ -73,10 +78,12 @@ impl Sha3 {
 }
 
 impl Hasher for Sha3 {
+    #[inline]
     fn update(&mut self, input: &[u8]) {
         self.state.update(input);
     }
 
+    #[inline]
     fn finalize(self, output: &mut [u8]) {
         self.state.finalize(output);
     }

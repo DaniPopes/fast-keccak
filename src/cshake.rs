@@ -25,6 +25,7 @@ impl CShake {
     /// Creates  new [`CShake`] hasher with a security level of 128 bits.
     ///
     /// [`CShake`]: struct.CShake.html
+    #[inline]
     pub fn v128(name: &[u8], custom_string: &[u8]) -> CShake {
         CShake::new(name, custom_string, 128)
     }
@@ -32,10 +33,12 @@ impl CShake {
     /// Creates  new [`CShake`] hasher with a security level of 256 bits.
     ///
     /// [`CShake`]: struct.CShake.html
+    #[inline]
     pub fn v256(name: &[u8], custom_string: &[u8]) -> CShake {
         CShake::new(name, custom_string, 256)
     }
 
+    #[inline]
     pub(crate) fn new(name: &[u8], custom_string: &[u8], bits: usize) -> CShake {
         let rate = bits_to_rate(bits);
         // if there is no name and no customization string
@@ -55,22 +58,26 @@ impl CShake {
         CShake { state }
     }
 
+    #[inline]
     pub(crate) fn fill_block(&mut self) {
         self.state.fill_block();
     }
 }
 
 impl Hasher for CShake {
+    #[inline]
     fn update(&mut self, input: &[u8]) {
         self.state.update(input);
     }
 
+    #[inline]
     fn finalize(self, output: &mut [u8]) {
         self.state.finalize(output);
     }
 }
 
 impl Xof for CShake {
+    #[inline]
     fn squeeze(&mut self, output: &mut [u8]) {
         self.state.squeeze(output);
     }

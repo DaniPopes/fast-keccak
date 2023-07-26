@@ -34,6 +34,7 @@ keccak_function!("`keccak-f[1600, 24]`", keccakf, ROUNDS, RC);
 pub struct KeccakF;
 
 impl Permutation for KeccakF {
+    #[inline]
     fn execute(buffer: &mut Buffer) {
         keccakf(buffer.words());
     }
