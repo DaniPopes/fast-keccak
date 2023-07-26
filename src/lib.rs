@@ -75,7 +75,6 @@ macro_rules! keccak_function {
     ($doc: expr, $name: ident, $rounds: expr, $rc: expr) => {
         #[doc = $doc]
         #[allow(unused_assignments)]
-        #[allow(non_upper_case_globals)]
         pub fn $name(a: &mut [u64; $crate::WORDS]) {
             use crunchy::unroll;
 
@@ -292,27 +291,29 @@ struct EncodedLen {
 }
 
 impl EncodedLen {
+    #[inline]
     fn value(&self) -> &[u8] {
         &self.buffer[self.offset..]
     }
 }
 
+#[inline]
 fn left_encode(len: usize) -> EncodedLen {
     let mut buffer = [0u8; 9];
     buffer[1..].copy_from_slice(&(len as u64).to_be_bytes());
-    let offset = buffer.iter().position(|i| *i != 0).unwrap_or(8);
-    buffer[offset - 1] = 9 - offset as u8;
-
-    EncodedLen {
-        offset: offset - 1,
-        buffer,
-    }
+    // equivalent to: buffer.iter().position(|x| *x != 0).unwrap_or(8);
+    let offset = (len.leading_zeros() as usize / 8) + (len != 0) as usize - 1;
+    // SAFETY: offset is always in range
+    *unsafe { buffer.get_unchecked_mut(offset) } = 8 - offset as u8;
+    EncodedLen { offset, buffer }
 }
 
+#[inline]
 fn right_encode(len: usize) -> EncodedLen {
     let mut buffer = [0u8; 9];
     buffer[..8].copy_from_slice(&(len as u64).to_be_bytes());
-    let offset = buffer.iter().position(|i| *i != 0).unwrap_or(7);
+    // equivalent to: buffer.iter().position(|x| *x != 0).unwrap_or(7);
+    let offset = (len.leading_zeros() as usize / 8) - (len == 0) as usize;
     buffer[8] = 8 - offset as u8;
     EncodedLen { offset, buffer }
 }
@@ -321,6 +322,7 @@ fn right_encode(len: usize) -> EncodedLen {
 struct Buffer([u64; WORDS]);
 
 impl Buffer {
+    #[inline]
     fn words(&mut self) -> &mut [u64; WORDS] {
         &mut self.0
     }
@@ -349,29 +351,25 @@ impl Buffer {
         swap_endianess(&mut self.0[start..end]);
     }
 
+    #[inline]
     fn setout(&mut self, dst: &mut [u8], offset: usize, len: usize) {
         self.execute(offset, len, |buffer| dst[..len].copy_from_slice(buffer));
     }
 
+    #[inline]
     fn xorin(&mut self, src: &[u8], offset: usize, len: usize) {
         self.execute(offset, len, |dst| {
             assert!(dst.len() <= src.len());
-            let len = dst.len();
-            let mut dst_ptr = dst.as_mut_ptr();
-            let mut src_ptr = src.as_ptr();
-            for _ in 0..len {
-                unsafe {
-                    *dst_ptr ^= *src_ptr;
-                    src_ptr = src_ptr.offset(1);
-                    dst_ptr = dst_ptr.offset(1);
-                }
+            for (dst, src) in core::iter::zip(dst, src) {
+                *dst ^= *src;
             }
         });
     }
 
+    #[inline]
     fn pad(&mut self, offset: usize, delim: u8, rate: usize) {
-        self.execute(offset, 1, |buff| buff[0] ^= delim);
-        self.execute(rate - 1, 1, |buff| buff[0] ^= 0x80);
+        self.execute(offset, 1, |buf| buf[0] ^= delim);
+        self.execute(rate - 1, 1, |buf| buf[0] ^= 0x80);
     }
 }
 
@@ -395,6 +393,7 @@ struct KeccakState<P> {
 }
 
 impl<P> Clone for KeccakState<P> {
+    #[inline]
     fn clone(&self) -> Self {
         KeccakState {
             buffer: self.buffer.clone(),
@@ -408,6 +407,7 @@ impl<P> Clone for KeccakState<P> {
 }
 
 impl<P: Permutation> KeccakState<P> {
+    #[inline]
     fn new(rate: usize, delim: u8) -> Self {
         assert!(rate != 0, "rate cannot be equal 0");
         KeccakState {
@@ -420,23 +420,26 @@ impl<P: Permutation> KeccakState<P> {
         }
     }
 
+    #[inline]
     fn keccak(&mut self) {
         P::execute(&mut self.buffer);
     }
 
+    #[inline]
     fn update(&mut self, input: &[u8]) {
         if let Mode::Squeezing = self.mode {
             self.mode = Mode::Absorbing;
             self.fill_block();
         }
 
-        //first foldp
+        // first foldp
         let mut ip = 0;
         let mut l = input.len();
         let mut rate = self.rate - self.offset;
         let mut offset = self.offset;
         while l >= rate {
-            self.buffer.xorin(&input[ip..], offset, rate);
+            let src = unsafe { input.get_unchecked(ip..) };
+            self.buffer.xorin(src, offset, rate);
             self.keccak();
             ip += rate;
             l -= rate;
@@ -444,14 +447,17 @@ impl<P: Permutation> KeccakState<P> {
             offset = 0;
         }
 
-        self.buffer.xorin(&input[ip..], offset, l);
+        let src = unsafe { input.get_unchecked(ip..) };
+        self.buffer.xorin(src, offset, l);
         self.offset = offset + l;
     }
 
+    #[inline]
     fn pad(&mut self) {
         self.buffer.pad(self.offset, self.delim, self.rate);
     }
 
+    #[inline]
     fn squeeze(&mut self, output: &mut [u8]) {
         if let Mode::Absorbing = self.mode {
             self.mode = Mode::Squeezing;
@@ -465,7 +471,8 @@ impl<P: Permutation> KeccakState<P> {
         let mut rate = self.rate - self.offset;
         let mut offset = self.offset;
         while l >= rate {
-            self.buffer.setout(&mut output[op..], offset, rate);
+            let dst = unsafe { output.get_unchecked_mut(op..) };
+            self.buffer.setout(dst, offset, rate);
             self.keccak();
             op += rate;
             l -= rate;
@@ -473,19 +480,23 @@ impl<P: Permutation> KeccakState<P> {
             offset = 0;
         }
 
-        self.buffer.setout(&mut output[op..], offset, l);
+        let dst = unsafe { output.get_unchecked_mut(op..) };
+        self.buffer.setout(dst, offset, l);
         self.offset = offset + l;
     }
 
+    #[inline]
     fn finalize(mut self, output: &mut [u8]) {
         self.squeeze(output);
     }
 
+    #[inline]
     fn fill_block(&mut self) {
         self.keccak();
         self.offset = 0;
     }
 
+    #[inline]
     fn reset(&mut self) {
         self.buffer = Buffer::default();
         self.offset = 0;
@@ -493,6 +504,7 @@ impl<P: Permutation> KeccakState<P> {
     }
 }
 
+#[inline]
 fn bits_to_rate(bits: usize) -> usize {
     200 - bits / 4
 }
