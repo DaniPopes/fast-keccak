@@ -6,7 +6,7 @@ use crate::{bits_to_rate, keccakf::KeccakF, Hasher, KeccakState, Xof};
 ///
 /// ```toml
 /// [dependencies]
-/// tiny-keccak = { version = "2.0.0", features = ["shake"] }
+/// fast-keccak = { version = "0.1.0", features = ["shake"] }
 /// ```
 ///
 /// [`FIPS-202`]: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf

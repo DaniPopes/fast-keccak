@@ -1,4 +1,4 @@
-use tiny_keccak::{Hasher, Shake, Xof};
+use fast_keccak::{Hasher, Shake, Xof};
 
 #[test]
 fn shake_xof_one() {

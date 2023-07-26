@@ -12,7 +12,7 @@ use crate::{left_encode, right_encode, CShake, Hasher, IntoXof, Xof};
 ///
 /// ```toml
 /// [dependencies]
-/// tiny-keccak = { version = "2.0.0", features = ["tuple_hash"] }
+/// fast-keccak = { version = "0.1.0", features = ["tuple_hash"] }
 /// ```
 ///
 /// [`SP800-185`]: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf
@@ -61,13 +61,13 @@ impl Hasher for TupleHash {
 ///
 /// ```toml
 /// [dependencies]
-/// tiny-keccak = { version = "2.0.0", features = ["tuple_hash"] }
+/// fast-keccak = { version = "0.1.0", features = ["tuple_hash"] }
 /// ```
 ///
 /// # Example
 ///
 /// ```
-/// # use tiny_keccak::{TupleHash, Xof, IntoXof, Hasher};
+/// # use fast_keccak::{TupleHash, Xof, IntoXof, Hasher};
 /// let input = b"hello world";
 /// let mut output = [0u8; 64];
 /// let mut hasher = TupleHash::v256(b"");

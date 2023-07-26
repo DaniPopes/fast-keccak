@@ -1,4 +1,4 @@
-use tiny_keccak::{Hasher, Keccak};
+use fast_keccak::{Hasher, Keccak};
 
 #[test]
 fn empty_keccak() {

@@ -2,8 +2,8 @@
 
 extern crate test;
 
+use fast_keccak::{Hasher, KangarooTwelve};
 use test::Bencher;
-use tiny_keccak::{KangarooTwelve, Hasher};
 
 #[bench]
 fn bench_k12(b: &mut Bencher) {

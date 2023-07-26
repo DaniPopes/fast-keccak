@@ -3,7 +3,7 @@
 //! # Example
 //!
 //! ```
-//! # use tiny_keccak::Hasher;
+//! # use fast_keccak::Hasher;
 //! #
 //! # fn foo<H: Hasher>(mut hasher: H) {
 //! let input_a = b"hello world";
@@ -36,10 +36,30 @@
 //! [`@quininer`]: https://github.com/quininer
 //! [`@Vurich`]: https://github.com/Vurich
 //! [`@oleganza`]: https://github.com/oleganza
-//! [`CC0`]: https://github.com/debris/tiny-keccak/blob/master/LICENSE
+//! [`CC0`]: https://github.com/debris/fast-keccak/blob/master/LICENSE
 
 #![no_std]
 #![deny(missing_docs)]
+
+#[cfg(not(any(
+    feature = "keccak",
+    feature = "shake",
+    feature = "sha3",
+    feature = "cshake",
+    feature = "kmac",
+    feature = "tuple_hash",
+    feature = "parallel_hash",
+    feature = "k12",
+    feature = "fips202",
+    feature = "sp800"
+)))]
+compile_error!(
+    "You need to specify at least one hash function you intend to use. \
+    Available options:\n\
+    keccak, shake, sha3, cshake, kmac, tuple_hash, parallel_hash, k12, fips202, sp800\n\
+    e.g.\n\
+    fast-keccak = { version = \"0.1.0\", features = [\"sha3\"] }"
+);
 
 const RHO: [u32; 24] = [
     1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 2, 14, 27, 41, 56, 8, 25, 43, 62, 18, 39, 61, 20, 44,
@@ -202,7 +222,7 @@ pub use parallel_hash::{ParallelHash, ParallelHashXof};
 /// # Example
 ///
 /// ```
-/// # use tiny_keccak::Hasher;
+/// # use fast_keccak::Hasher;
 /// #
 /// # fn foo<H: Hasher>(mut hasher: H) {
 /// let input_a = b"hello world";
@@ -226,7 +246,7 @@ pub trait Hasher {
 /// # Example
 ///
 /// ```
-/// # use tiny_keccak::IntoXof;
+/// # use fast_keccak::IntoXof;
 /// #
 /// # fn foo<H: IntoXof>(hasher: H) {
 /// let xof = hasher.into_xof();
@@ -253,7 +273,7 @@ pub trait IntoXof {
 /// # Example
 ///
 /// ```
-/// # use tiny_keccak::Xof;
+/// # use fast_keccak::Xof;
 /// #
 /// # fn foo<X: Xof>(mut xof: X) {
 /// let mut output = [0u8; 64];

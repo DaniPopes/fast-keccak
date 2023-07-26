@@ -12,7 +12,7 @@ use crate::{bits_to_rate, left_encode, right_encode, CShake, Hasher, IntoXof, Xo
 ///
 /// ```toml
 /// [dependencies]
-/// tiny-keccak = { version = "2.0.0", features = ["kmac"] }
+/// fast-keccak = { version = "0.1.0", features = ["kmac"] }
 /// ```
 ///
 /// [`SP800-185`]: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf
@@ -70,13 +70,13 @@ impl Hasher for Kmac {
 ///
 /// ```toml
 /// [dependencies]
-/// tiny-keccak = { version = "2.0.0", features = ["kmac"] }
+/// fast-keccak = { version = "0.1.0", features = ["kmac"] }
 /// ```
 ///
 /// # Example
 ///
 /// ```
-/// # use tiny_keccak::{Kmac, Xof, IntoXof, Hasher};
+/// # use fast_keccak::{Kmac, Xof, IntoXof, Hasher};
 /// let input = b"hello world";
 /// let mut output = [0u8; 64];
 /// let mut kmac = Kmac::v256(b"", b"");

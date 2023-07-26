@@ -1,4 +1,4 @@
-use tiny_keccak::{CShake, Hasher, Xof};
+use fast_keccak::{CShake, Hasher, Xof};
 
 #[test]
 fn test_cshake128_one() {

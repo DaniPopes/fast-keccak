@@ -2,8 +2,8 @@
 
 extern crate test;
 
+use fast_keccak::{keccakf, Hasher, Keccak};
 use test::Bencher;
-use tiny_keccak::{keccakf, Keccak, Hasher};
 
 #[bench]
 fn bench_keccak_256_input_4096_bytes(b: &mut Bencher) {

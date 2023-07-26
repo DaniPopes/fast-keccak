@@ -1,4 +1,4 @@
-use tiny_keccak::{Hasher, Sha3};
+use fast_keccak::{Hasher, Sha3};
 
 fn main() {
     let mut sha3 = Sha3::v256();

@@ -8,13 +8,13 @@ use crate::{bits_to_rate, keccakf::KeccakF, Hasher, KeccakState};
 ///
 /// ```toml
 /// [dependencies]
-/// tiny-keccak = { version = "2.0.0", features = ["sha3"] }
+/// fast-keccak = { version = "0.1.0", features = ["sha3"] }
 /// ```
 ///
 /// # Example
 ///
 /// ```
-/// # use tiny_keccak::{Hasher, Sha3};
+/// # use fast_keccak::{Hasher, Sha3};
 /// #
 /// # fn main() {
 /// let input = b"hello world";

@@ -1,4 +1,4 @@
-use tiny_keccak::{Hasher, KangarooTwelve};
+use fast_keccak::{Hasher, KangarooTwelve};
 
 fn pattern(len: usize) -> Vec<u8> {
     (0..len).map(|j| (j % 251) as u8).collect()
@@ -68,7 +68,7 @@ fn kangaroo_twelve_with_custom_string_and_message() {
         \xd8\x48\xc5\x06\x8c\xed\x73\x6f\x44\x62\x15\x9b\x98\x67\xfd\x4c\
         \x20\xb8\x08\xac\xc3\xd5\xbc\x48\xe0\xb0\x6b\xa0\xa3\x76\x2e\xc4\
     ";
-    test_kangaroo_twelve(pattern(41), &[0xff], 32, expected);
+    test_kangaroo_twelve(pattern(41), [0xff], 32, expected);
 }
 
 #[test]
@@ -79,7 +79,7 @@ fn kangaroo_twelve_with_custom_string_and_message2() {
     ";
     test_kangaroo_twelve(
         pattern(68921),
-        &[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
+        [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff],
         32,
         expected,
     );

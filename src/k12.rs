@@ -20,7 +20,7 @@ fn encode_len(len: usize) -> EncodedLen {
 ///
 /// ```toml
 /// [dependencies]
-/// tiny-keccak = { version = "2.0.0", features = ["k12"] }
+/// fast-keccak = { version = "0.1.0", features = ["k12"] }
 /// ```
 ///
 /// [`here`]: https://eprint.iacr.org/2016/770.pdf
@@ -60,14 +60,14 @@ impl<T: AsRef<[u8]>> Hasher for KangarooTwelve<T> {
             self.written += todo;
             to_absorb = &to_absorb[todo..];
 
-            if to_absorb.len() > 0 && self.written == Self::MAX_CHUNK_SIZE {
+            if !to_absorb.is_empty() && self.written == Self::MAX_CHUNK_SIZE {
                 self.state.update(&[0x03, 0, 0, 0, 0, 0, 0, 0]);
                 self.written = 0;
                 self.chunks += 1;
             }
         }
 
-        while to_absorb.len() > 0 {
+        while !to_absorb.is_empty() {
             if self.written == Self::MAX_CHUNK_SIZE {
                 let mut chunk_hash = [0u8; 32];
                 let current_chunk = self.current_chunk.clone();
@@ -97,13 +97,13 @@ impl<T: AsRef<[u8]>> Hasher for KangarooTwelve<T> {
 ///
 /// ```toml
 /// [dependencies]
-/// tiny-keccak = { version = "2.0.0", features = ["k12"] }
+/// fast-keccak = { version = "0.1.0", features = ["k12"] }
 /// ```
 ///
 /// # Example
 ///
 /// ```
-/// # use tiny_keccak::{KangarooTwelve, Xof, IntoXof, Hasher};
+/// # use fast_keccak::{KangarooTwelve, Xof, IntoXof, Hasher};
 /// let input = b"hello world";
 /// let mut output = [0u8; 64];
 /// let mut hasher = KangarooTwelve::new(b"");

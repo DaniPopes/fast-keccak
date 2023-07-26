@@ -8,7 +8,7 @@ use super::{bits_to_rate, keccakf::KeccakF, Hasher, KeccakState};
 ///
 /// ```toml
 /// [dependencies]
-/// tiny-keccak = { version = "2.0.0", features = ["keccak"] }
+/// fast-keccak = { version = "0.1.0", features = ["keccak"] }
 /// ```
 ///
 /// [`Keccak SHA3 submission`]: https://keccak.team/files/Keccak-submission-3.pdf
@@ -61,7 +61,7 @@ impl Hasher for Keccak {
     /// # Example
     ///
     /// ```
-    /// # use tiny_keccak::{Hasher, Keccak};
+    /// # use fast_keccak::{Hasher, Keccak};
     /// #
     /// # fn main() {
     /// # let mut keccak = Keccak::v256();
@@ -78,7 +78,7 @@ impl Hasher for Keccak {
     /// # Example
     ///
     /// ```
-    /// # use tiny_keccak::{Hasher, Keccak};
+    /// # use fast_keccak::{Hasher, Keccak};
     /// #
     /// # fn main() {
     /// # let keccak = Keccak::v256();

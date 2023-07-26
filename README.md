@@ -1,16 +1,16 @@
-# tiny-keccak
+# fast-keccak
 
 An implementation of Keccak derived functions specified in [`FIPS-202`], [`SP800-185`] and [`KangarooTwelve`].
 
 [![Build Status][travis-image]][travis-url]
 
-[travis-image]: https://travis-ci.org/debris/tiny-keccak.svg?branch=master
-[travis-url]: https://travis-ci.org/debris/tiny-keccak
+[travis-image]: https://travis-ci.org/debris/fast-keccak.svg?branch=master
+[travis-url]: https://travis-ci.org/debris/fast-keccak
 [`FIPS-202`]: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
 [`SP800-185`]: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf
 [`KangarooTwelve`]: https://eprint.iacr.org/2016/770.pdf
 
-[`Documentation`](https://docs.rs/tiny-keccak)
+[`Documentation`](https://docs.rs/fast-keccak)
 
 The `Keccak-f[1600]` permutation is fully unrolled; it's nearly as fast
 as the Keccak team's optimized permutation.
@@ -23,13 +23,13 @@ Available options are: `cshake`, `fips202`, `k12`, `keccak`, `kmac`, `parallel_h
 
 ```toml
 [dependencies]
-tiny-keccak = { version = "2.0", features = ["sha3"] }
+fast-keccak = { version = "2.0", features = ["sha3"] }
 ```
 
 ## Example
 
 ```rust
-use tiny_keccak::Sha3;
+use fast_keccak::Sha3;
 
 fn main() {
     let mut sha3 = Sha3::v256();
@@ -59,12 +59,12 @@ MacBook Pro (Retina, 15-inch, Mid 2015)
 Intel Iris Pro 1536 MB
 ```
 
-Benchmark code is available [here](https://github.com/debris/tiny-keccak/blob/master/comparison/benches/sha3.rs)
+Benchmark code is available [here](https://github.com/debris/fast-keccak/blob/master/comparison/benches/sha3.rs)
 
 ```
 running 4 tests
 test rust_crypto_sha3_256_input_32_bytes   ... bench:         677 ns/iter (+/- 113) = 47 MB/s
 test rust_crypto_sha3_256_input_4096_bytes ... bench:      17,619 ns/iter (+/- 4,174) = 232 MB/s
-test tiny_keccak_sha3_256_input_32_bytes   ... bench:         569 ns/iter (+/- 204) = 56 MB/s
-test tiny_keccak_sha3_256_input_4096_bytes ... bench:      17,185 ns/iter (+/- 4,575) = 238 MB/s
+test fast_keccak_sha3_256_input_32_bytes   ... bench:         569 ns/iter (+/- 204) = 56 MB/s
+test fast_keccak_sha3_256_input_4096_bytes ... bench:      17,185 ns/iter (+/- 4,575) = 238 MB/s
 ```
